@@ -3,36 +3,37 @@ const pool = require("../../config/db.js");
 const fs = require("fs");
 const path = require("path");
 const { pdfParse } = require("../../utils/pdfParser.js");
+const { chunkText } = require("../rag/chunkService.js");
 
-const uploadDocumentService = async ({workspace, file}) => {
+const uploadDocumentService = async ({ workspace, file }) => {
+    try {
+        const workspaceFolder = path.join(
+            "uploads",
+            workspace.id.toString()
+        );
 
-    const workspaceFolder = path.join(
-        "uploads",
-        workspace.id.toString()
-    );
+        if (!fs.existsSync(workspaceFolder)) {
 
-    if (!fs.existsSync(workspaceFolder)) {
+            fs.mkdirSync(workspaceFolder, {
+                recursive: true
+            });
 
-        fs.mkdirSync(workspaceFolder, {
-            recursive: true
-        });
-
-    }
-
-
-    const newPath = path.join(
-        workspaceFolder,
-        file.filename
-    );
+        }
 
 
-    fs.renameSync(
-        file.path,
-        newPath
-    );
+        const newPath = path.join(
+            workspaceFolder,
+            file.filename
+        );
 
-    const result = await pool.query(
-        `
+
+        fs.renameSync(
+            file.path,
+            newPath
+        );
+
+        const result = await pool.query(
+            `
         INSERT INTO documents
         (
             workspace_id,
@@ -45,25 +46,48 @@ const uploadDocumentService = async ({workspace, file}) => {
         VALUES($1,$2,$3,$4,$5,$6)
         RETURNING *
         `,
-        [
-            workspace.id,
-            file.filename,
-            file.originalname,
-            newPath,
-            file.mimetype,
-            file.size
-        ]
-    );
+            [
+                workspace.id,
+                file.filename,
+                file.originalname,
+                newPath,
+                file.mimetype,
+                file.size
+            ]
+        );
 
-    const document= result.rows[0];
+        const document = result.rows[0];
+        console.log("📄 Parsing PDF...");
         const extractedText = await pdfParse(newPath);
+        console.log("✅ PDF Parsed");
 
-console.log("exTEXT",extractedText);
+        console.log("✂️ Chunking Text...");
 
-return{
-    document,
-    extractedText,
-}
+
+        const chunks = chunkText(extractedText);
+        console.log("Total Chunks:", chunks.length);
+        chunks.forEach((chunk, index) => {
+
+            console.log(`\nChunk ${index + 1}`);
+
+            `Chunk ${index + 1}: ${chunk.substring(0, 100)}...`
+
+        });
+
+
+        return {
+            document,
+            extractedText,
+            chunks,
+        }
+    } catch (error) {
+        if (file && fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+        }
+
+        throw error;
+    }
+
 };
 
 module.exports = {

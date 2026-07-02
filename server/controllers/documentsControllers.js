@@ -36,7 +36,6 @@ const uploadDocument = async (req, res) => {
     }
 
 };
-
 module.exports = {
     uploadDocument
 };
