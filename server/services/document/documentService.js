@@ -7,7 +7,9 @@ const { chunkText } = require("../rag/chunkService.js");
 const { processDocument } = require("../rag/ragPipelineService.js");
 
 const uploadDocumentService = async ({ workspace, file }) => {
+    const client = await pool.connect();
     try {
+        await client.query("BEGIN");
         const workspaceFolder = path.join(
             "uploads",
             workspace.id.toString()
@@ -33,7 +35,7 @@ const uploadDocumentService = async ({ workspace, file }) => {
             newPath
         );
 
-        const result = await pool.query(
+        const result = await client.query(
             `
         INSERT INTO documents
         (
@@ -76,22 +78,27 @@ const uploadDocumentService = async ({ workspace, file }) => {
         });
 
         console.log("before process document");
-        
+
         await processDocument({
+            client,
             workspaceId: workspace.id,
             documentId: document.id,
             chunks
         });
-console.log("after process document");
+        console.log("after process document");
         return {
             document,
         }
     } catch (error) {
+        await client.query("ROLLBACK");
         if (file && fs.existsSync(file.path)) {
             fs.unlinkSync(file.path);
         }
 
         throw error;
+    }
+    finally {
+        client.release();
     }
 
 };

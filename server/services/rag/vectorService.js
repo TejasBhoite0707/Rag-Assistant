@@ -1,6 +1,7 @@
 const pool = require("../../config/db.js");
 
 const saveDocumentChunks = async ({
+    client,
     workspaceId,
     documentId,
     chunks,
@@ -15,7 +16,7 @@ const saveDocumentChunks = async ({
 
             console.log("Saving chunk:", i);
 
-            await pool.query(
+            await client.query(
                 `
     INSERT INTO document_chunks
     (

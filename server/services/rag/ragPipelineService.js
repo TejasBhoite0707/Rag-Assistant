@@ -2,6 +2,7 @@ const { generateEmbedding } = require("./embeddingService.js");
 const { saveDocumentChunks } = require("./vectorService.js");
 
 const processDocument = async ({
+    client,
     workspaceId,
     documentId,
     chunks
@@ -18,6 +19,7 @@ const processDocument = async ({
     console.log("💾 Saving Chunks...");
 
     await saveDocumentChunks({
+        client,
         workspaceId,
         documentId,
         chunks,
