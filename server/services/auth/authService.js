@@ -1,5 +1,5 @@
-const {hashPassword,comparePassword}=require("../utils/hash.js");
-const pool = require("../config/db.js");
+const {hashPassword,comparePassword}=require("../../utils/hash.js");
+const pool = require("../../config/db.js");
 const registerUser=async (name, email, password)=>{
     const exisitingUser=await pool.query("SELECT id FROM users WHERE email=$1",
         [email]

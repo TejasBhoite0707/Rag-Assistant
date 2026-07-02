@@ -1,4 +1,4 @@
-const { registerUser,loginUser } = require("../services/authService.js");
+const { registerUser,loginUser } = require("../services/auth/authService.js");
 const{generateToken}=require("../utils/jwt.js");
 const register = async (req, res) => {
     try {
