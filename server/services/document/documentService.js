@@ -86,6 +86,7 @@ const uploadDocumentService = async ({ workspace, file }) => {
             chunks
         });
         console.log("after process document");
+        await client.query("COMMIT");
         return {
             document,
         }
