@@ -2,6 +2,7 @@ const pool = require("../../config/db.js");
 
 const fs = require("fs");
 const path = require("path");
+const { pdfParse } = require("../../utils/pdfParser.js");
 
 const uploadDocumentService = async ({workspace, file}) => {
 
@@ -18,10 +19,12 @@ const uploadDocumentService = async ({workspace, file}) => {
 
     }
 
+
     const newPath = path.join(
         workspaceFolder,
         file.filename
     );
+
 
     fs.renameSync(
         file.path,
@@ -52,8 +55,15 @@ const uploadDocumentService = async ({workspace, file}) => {
         ]
     );
 
-    return result.rows[0];
+    const document= result.rows[0];
+        const extractedText = await pdfParse(newPath);
 
+console.log("exTEXT",extractedText);
+
+return{
+    document,
+    extractedText,
+}
 };
 
 module.exports = {
