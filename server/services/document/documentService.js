@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { pdfParse } = require("../../utils/pdfParser.js");
 const { chunkText } = require("../rag/chunkService.js");
+const { processDocument } = require("../rag/ragPipelineService.js");
 
 const uploadDocumentService = async ({ workspace, file }) => {
     try {
@@ -74,11 +75,16 @@ const uploadDocumentService = async ({ workspace, file }) => {
 
         });
 
-
+        console.log("before process document");
+        
+        await processDocument({
+            workspaceId: workspace.id,
+            documentId: document.id,
+            chunks
+        });
+console.log("after process document");
         return {
             document,
-            extractedText,
-            chunks,
         }
     } catch (error) {
         if (file && fs.existsSync(file.path)) {
