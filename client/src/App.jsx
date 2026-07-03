@@ -1,17 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import AppRoutes from "./routes/AppRoutes"
 
-
+import { fetchCurrentUser } from "./features/auth/store/authSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 function App() {
+  const dispatch=useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchCurrentUser());
+  },[dispatch])
   
 
-  return (
-    <>
-  <h1>Rag</h1>
-    </>
-  )
+  return <AppRoutes/>
 }
 
 export default App
+
+
+
