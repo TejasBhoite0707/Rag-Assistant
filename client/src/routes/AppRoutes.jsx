@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import WorkspaceDetails from "../features/workspace/pages/WorkspaceDetails";
 
 const AppRoutes = () => {
 
@@ -49,6 +50,14 @@ const AppRoutes = () => {
 
                             <Dashboard />
 
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/workspace/:id"
+                    element={
+                        <ProtectedRoute>
+                            <WorkspaceDetails />
                         </ProtectedRoute>
                     }
                 />
