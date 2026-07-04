@@ -1,5 +1,6 @@
 const express=require("express");
 const cors=require("cors");
+const path = require("path");
 const cookieParser=require("cookie-parser");
 const authenticateUser = require("./middleware/authMiddleware.js");
 const authRoutes=require("./routes/authRoutes.js");
@@ -31,6 +32,16 @@ app.get("/api/profile", authenticateUser, (req, res) => {
         success: true,
         user: req.user
     });
+
+});
+
+app.use(express.static(path.join(__dirname,"../client/dist")));
+
+app.use( (req, res) => {
+
+    res.sendFile(
+        path.join(__dirname, "../client/dist/index.html")
+    );
 
 });
 
