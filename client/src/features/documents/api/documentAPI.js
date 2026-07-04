@@ -55,5 +55,5 @@ export const deleteDocument = async (documentId) => {
 
 export const getDocumentUrl = (documentId) => {
 
-    return `$/api/documents/view/${documentId}`;
+    return `/api/documents/view/${documentId}`;
 }
