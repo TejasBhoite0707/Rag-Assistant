@@ -5,7 +5,7 @@ const {
     viewDocumentService
 } = require("../services/document/documentService.js");
 const path = require("path");
-
+const fs=require("fs");
 const uploadDocument = async (req, res) => {
 
     try {
@@ -100,9 +100,13 @@ const viewDocument = async (req, res) => {
                 req.user.id
             );
 
-        return res.sendFile(
-            path.resolve(document.file_path)
-        );
+        const absolutePath = path.resolve(document.file_path);
+
+        console.log("DB Path:", document.file_path);
+        console.log("Absolute Path:", absolutePath);
+        console.log("Exists:", fs.existsSync(absolutePath));
+
+        return res.sendFile(absolutePath);
 
     } catch (error) {
 
