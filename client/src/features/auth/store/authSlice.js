@@ -7,11 +7,12 @@ import {
     getCurrentUser
 } from "../api/authAPI.js";
 
-const initialState={
-    user:null,
-    isAuthenticated:false,
-    isLoading:false,
-    error:null,
+const initialState = {
+    user: null,
+    isAuthenticated: false,
+    isLoading: false,
+    isInitialized: false,
+    error: null,
 }
 
 export const register = createAsyncThunk(
@@ -135,9 +136,15 @@ const authSlice = createSlice({
             })
 
             .addCase(logout.fulfilled, (state) => {
-                state.isLoading = false;
                 state.user = null;
+
                 state.isAuthenticated = false;
+
+                state.isLoading = false;
+
+                state.isInitialized = true;
+
+                state.error = null;
             })
 
             .addCase(logout.rejected, (state, action) => {
@@ -156,12 +163,15 @@ const authSlice = createSlice({
 
             .addCase(fetchCurrentUser.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.isInitialized = true;
                 state.user = action.payload;
+
                 state.isAuthenticated = true;
             })
 
             .addCase(fetchCurrentUser.rejected, (state) => {
                 state.isLoading = false;
+                state.isInitialized = true;
                 state.user = null;
                 state.isAuthenticated = false;
             });

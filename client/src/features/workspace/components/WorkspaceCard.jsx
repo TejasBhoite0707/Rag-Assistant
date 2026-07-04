@@ -1,4 +1,4 @@
-import { FolderOpen, Trash2 } from "lucide-react";
+import { FolderOpen, Trash2, CalendarDays } from "lucide-react";
 
 const WorkspaceCard = ({
     workspace,
@@ -6,54 +6,119 @@ const WorkspaceCard = ({
     onDelete
 }) => {
 
+    const formattedDate = new Date(
+        workspace.created_at
+    ).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+
     return (
 
         <div
+
             onClick={() => onOpen(workspace.id)}
+
             className="
                 group
                 cursor-pointer
                 rounded-xl
-                bg-white
-                shadow-sm
-                hover:shadow-lg
-                transition-all
-                duration-300
                 border
                 border-gray-200
+                bg-white
                 p-6
+                shadow-sm
+                hover:shadow-xl
+                hover:-translate-y-1
+                transition-all
+                duration-300
                 flex
                 flex-col
                 justify-between
                 h-60
             "
+
         >
 
             <div>
 
-                <FolderOpen
-                    size={42}
-                    className="text-blue-600"
-                />
+                <div
+                    className="
+                        w-14
+                        h-14
+                        rounded-xl
+                        bg-blue-100
+                        flex
+                        items-center
+                        justify-center
+                    "
+                >
 
-                <h2 className="mt-5 text-xl font-semibold line-clamp-2">
+                    <FolderOpen
+                        size={30}
+                        className="text-blue-600"
+                    />
+
+                </div>
+
+                <h2
+                    className="
+                        mt-5
+                        text-xl
+                        font-semibold
+                        line-clamp-2
+                        text-slate-900
+                    "
+                >
 
                     {workspace.workspace_name}
 
                 </h2>
 
-                <p className="mt-3 text-sm text-gray-500">
+                <div
+                    className="
+                        mt-4
+                        flex
+                        items-center
+                        gap-2
+                        text-sm
+                        text-gray-500
+                    "
+                >
 
-                    Created {" "}
-                    {new Date(
-                        workspace.created_at
-                    ).toLocaleDateString()}
+                    <CalendarDays size={16} />
 
-                </p>
+                    <span>
+
+                        {formattedDate}
+
+                    </span>
+
+                </div>
 
             </div>
 
-            <div className="flex justify-end">
+            <div
+                className="
+                    flex
+                    items-center
+                    justify-between
+                    mt-6
+                "
+            >
+
+                <p
+                    className="
+                        text-sm
+                        font-medium
+                        text-blue-600
+                    "
+                >
+
+                    Click to open →
+
+                </p>
 
                 <button
 
@@ -67,7 +132,7 @@ const WorkspaceCard = ({
 
                     className="
                         rounded-lg
-                        p-3
+                        p-2
                         hover:bg-red-50
                         transition
                     "

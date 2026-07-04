@@ -2,9 +2,12 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import DashboardLayout from "../../../layouts/DashboardLayout";
+import useDocument from "../../documents/hooks/useDocument";
 
+import UploadDocument from "../../documents/components/UploadDocument";
+import DocumentList from "../../documents/components/DocumentList";
 import useWorkspace from "../hooks/useWorkspace";
-
+import ChatSection from "../../chat/components/ChatSection";
 const WorkspaceDetails = () => {
 
     const { id } = useParams();
@@ -19,6 +22,17 @@ const WorkspaceDetails = () => {
 
     } = useWorkspace();
 
+    const {
+
+        documents,
+
+        upload,
+
+        remove,
+
+        isLoading: documentLoading
+
+    } = useDocument(id);
     useEffect(() => {
 
         getWorkspace(id);
@@ -42,9 +56,9 @@ const WorkspaceDetails = () => {
         );
 
     }
-console.log("Workspace ID:", id);
-console.log("Selected Workspace:", selectedWorkspace);
-console.log("Loading:", isLoading);
+    console.log("Workspace ID:", id);
+    console.log("Selected Workspace:", selectedWorkspace);
+    console.log("Loading:", isLoading);
     return (
 
         <DashboardLayout
@@ -90,39 +104,42 @@ console.log("Loading:", isLoading);
 
                     <div
                         className="
-                            bg-white
-                            rounded-xl
-                            border
-                            p-6
-                            
-                        "
+        bg-white
+        rounded-xl
+        border
+        p-6
+    "
                     >
 
-                        <h2 className="text-xl font-semibold">
+                        <h2 className="text-xl font-semibold mb-6">
 
                             Documents
 
                         </h2>
 
+                        <UploadDocument
+
+                            onUpload={upload}
+
+                            isLoading={documentLoading}
+
+                        />
+
+                        <div className="mt-6">
+
+                            <DocumentList
+
+                                documents={documents}
+
+                                onDelete={remove}
+
+                            />
+
+                        </div>
+
                     </div>
 
-                    <div
-                        className="
-                            bg-white
-                            rounded-xl
-                            border
-                            p-6
-                            
-                        "
-                    >
-
-                        <h2 className="text-xl font-semibold">
-
-                            AI Assistant
-
-                        </h2>
-
-                    </div>
+                    <ChatSection/>
 
                 </div>
 

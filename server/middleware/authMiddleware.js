@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const pool = require("../config/db.js");
 
-const authenticateUser = (req, res, next) => {
+const authenticateUser = async(req, res, next) => {
 
     try {
 
@@ -18,10 +19,26 @@ const authenticateUser = (req, res, next) => {
             process.env.JWT_SECRET
         );
 
-        req.user = {
-            id: decoded.id,
-    email: decoded.email
-        };
+         const result = await pool.query(
+            `
+            SELECT
+                id,
+                name,
+                email
+            FROM users
+            WHERE id = $1
+            `,
+            [decoded.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        req.user = result.rows[0];
 
         next();
 

@@ -104,6 +104,127 @@ const uploadDocumentService = async ({ workspace, file }) => {
 
 };
 
+const getDocumentsService = async (workspaceId) => {
+
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            workspace_id,
+            original_name,
+            file_name,
+            file_size,
+            mime_type,
+            uploaded_at
+        FROM documents
+        WHERE workspace_id = $1
+        ORDER BY uploaded_at DESC
+        `,
+        [workspaceId]
+    );
+
+    return result.rows;
+
+};
+
+const deleteDocumentService = async (documentId) => {
+
+    const client = await pool.connect();
+
+    try {
+
+        await client.query("BEGIN");
+
+        const result = await client.query(
+            `
+            SELECT *
+            FROM documents
+            WHERE id = $1
+            `,
+            [documentId]
+        );
+
+        if (result.rows.length === 0) {
+
+            throw new Error("Document not found");
+
+        }
+
+        const document = result.rows[0];
+
+        await client.query(
+            `
+            DELETE
+            FROM document_chunks
+            WHERE document_id = $1
+            `,
+            [documentId]
+        );
+
+        await client.query(
+            `
+            DELETE
+            FROM documents
+            WHERE id = $1
+            `,
+            [documentId]
+        );
+
+        if (
+            document.file_path &&
+            fs.existsSync(document.file_path)
+        ) {
+
+            fs.unlinkSync(document.file_path);
+
+        }
+
+        await client.query("COMMIT");
+
+    } catch (error) {
+
+        await client.query("ROLLBACK");
+
+        throw error;
+
+    } finally {
+
+        client.release();
+
+    }
+
+};
+
+const viewDocumentService = async (documentId, userId) => {
+
+    const result = await pool.query(
+        `
+        SELECT
+            d.file_path,
+            d.original_name
+        FROM documents d
+        INNER JOIN workspaces w
+            ON d.workspace_id = w.id
+        WHERE
+            d.id = $1
+            AND w.user_id = $2
+        `,
+        [documentId, userId]
+    );
+
+    if (result.rows.length === 0) {
+
+        throw new Error("Document not found");
+
+    }
+
+    return result.rows[0];
+
+};
+
 module.exports = {
-    uploadDocumentService
+    uploadDocumentService,
+    getDocumentsService,
+    deleteDocumentService,
+    viewDocumentService
 };

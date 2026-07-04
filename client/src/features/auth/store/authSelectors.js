@@ -8,3 +8,6 @@ export const selectLoading = (state) =>
 
 export const selectError = (state) =>
     state.auth.error;
+
+export const selectInitialized = (state) =>
+    state.auth.isInitialized;

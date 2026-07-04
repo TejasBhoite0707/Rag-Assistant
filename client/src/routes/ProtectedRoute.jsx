@@ -1,19 +1,23 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { selectIsAuthenticated, selectLoading } from "../features/auth/store/authSelectors";
+import { selectIsAuthenticated, selectLoading,selectInitialized } from "../features/auth/store/authSelectors";
 import Loader from "../components/ui/Loader";
 
 const ProtectedRoute = ({ children }) => {
 
     const isAuthenticated = useSelector(selectIsAuthenticated);
     const isLoading = useSelector(selectLoading);
+     const isInitialized = useSelector(selectInitialized);
+    if (!isInitialized) {
 
-    if (isLoading) {
         return <Loader />;
+
     }
 
     if (!isAuthenticated) {
+
         return <Navigate to="/login" replace />;
+
     }
 
     return children;

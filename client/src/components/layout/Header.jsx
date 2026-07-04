@@ -2,59 +2,63 @@ import { useSelector } from "react-redux";
 
 import { selectUser } from "../../features/auth/store/authSelectors";
 
-const Header = ({
-    title
-}) => {
+const Header = ({ title }) => {
 
     const user = useSelector(selectUser);
 
     return (
 
-        <header className="h-16 bg-white shadow-sm flex items-center justify-between px-6">
+        <header
+            className="
+                bg-white
+                border-b
+                border-slate-200
+                px-8
+                py-6
+            "
+        >
 
-            <h2 className="text-2xl font-semibold">
+            <h1
+                className="
+                    text-3xl
+                    font-bold
+                    text-slate-900
+                "
+            >
 
                 {title}
 
-            </h2>
+            </h1>
 
-            <div className="flex items-center gap-4">
+            <p
+                className="
+                    mt-3
+                    text-lg
+                    font-medium
+                    text-slate-700
+                "
+            >
 
-                <div className="text-right">
+                👋 Welcome back,{" "}
 
-                    <p className="font-semibold">
+                <span className="text-blue-600">
 
-                        {user?.name}
+                    {user?.name}
 
-                    </p>
+                </span>
 
-                    <p className="text-sm text-gray-500">
+            </p>
 
-                        {user?.email}
+            <p
+                className="
+                    mt-1
+                    text-slate-500
+                "
+            >
 
-                    </p>
+                Manage your AI workspaces, upload documents and chat with your AI assistant.
 
-                </div>
-
-                <div
-                    className="
-                        h-10
-                        w-10
-                        rounded-full
-                        bg-blue-600
-                        text-white
-                        flex
-                        items-center
-                        justify-center
-                        font-semibold
-                    "
-                >
-
-                    {user?.name?.charAt(0)?.toUpperCase()}
-
-                </div>
-
-            </div>
+            </p>
 
         </header>
 

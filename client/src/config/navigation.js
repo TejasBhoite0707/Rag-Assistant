@@ -10,18 +10,6 @@ const navigation = [
         label: "Dashboard",
         path: "/dashboard",
         icon: LayoutDashboard
-    },
-    {
-        id: 2,
-        label: "Workspaces",
-        path: "/workspaces",
-        icon: FolderOpen
-    },
-    {
-        id: 3,
-        label: "Logout",
-        path: "/logout",
-        icon: LogOut
     }
 ];
 

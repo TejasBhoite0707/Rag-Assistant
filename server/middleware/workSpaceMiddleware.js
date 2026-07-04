@@ -4,24 +4,30 @@ const validateWorkspace = async (req, res, next) => {
 
     try {
 
-        const { workspace_id } = req.body|| req.params|| req.query;
+        const workspaceId =
+           req.body?.workspace_id ||
+    req.params?.workspaceId ||
+    req.params?.workspace_id ||
+    req.query?.workspace_id;
 
-        console.log("Body:", req.body);
-console.log("File:", req.file);
-        if (!workspace_id) {
+        if (!workspaceId) {
+
             return res.status(400).json({
                 success: false,
                 message: "workspace_id is required"
             });
+
         }
 
         const result = await pool.query(
-            `SELECT *
-             FROM workspaces
-             WHERE id = $1
-             AND user_id = $2`,
+            `
+            SELECT *
+            FROM workspaces
+            WHERE id = $1
+            AND user_id = $2
+            `,
             [
-                workspace_id,
+                workspaceId,
                 req.user.id
             ]
         );
@@ -35,7 +41,6 @@ console.log("File:", req.file);
 
         }
 
-        // Save workspace for later use
         req.workspace = result.rows[0];
 
         next();

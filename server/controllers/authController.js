@@ -1,4 +1,4 @@
-const { registerUser,loginUser } = require("../services/auth/authService.js");
+const { registerUser,loginUser,logoutService } = require("../services/auth/authService.js");
 const{generateToken}=require("../utils/jwt.js");
 const register = async (req, res) => {
     try {
@@ -76,7 +76,30 @@ const login = async (req, res) => {
 
 };
 
+const logout = async (req, res) => {
+
+    try {
+
+        const response = await logoutService(res);
+
+        return res.status(200).json(response);
+
+    } catch (error) {
+
+        return res.status(500).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
+
 module.exports = {
     register,
-    login
+    login,
+    logout
 };
