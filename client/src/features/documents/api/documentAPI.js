@@ -55,5 +55,5 @@ export const deleteDocument = async (documentId) => {
 
 export const getDocumentUrl = (documentId) => {
 
-    return `${import.meta.env.VITE_API_URL}/documents/view/${documentId}`;
+    return `${process.env.VITE_API_URL}/documents/view/${documentId}`;
 }
