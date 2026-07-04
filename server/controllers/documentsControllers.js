@@ -100,14 +100,9 @@ const viewDocument = async (req, res) => {
                 req.user.id
             );
 
-        const absolutePath = path.resolve(document.file_path);
-
-        console.log("DB Path:", document.file_path);
-        console.log("Absolute Path:", absolutePath);
-        console.log("Exists:", fs.existsSync(absolutePath));
-
-        return res.sendFile(absolutePath);
-
+        return res.sendFile(
+            path.resolve(document.file_path)
+        );
 
     } catch (error) {
 
